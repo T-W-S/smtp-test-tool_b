@@ -14,6 +14,7 @@ from flask import (
 )
 
 from smtp_tool.services import config_service
+from smtp_tool.services.smtp_service import DEFAULT_SMTP_PORT
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ def add_profile():
         profile_data = {
             "name": request.form.get("name"),
             "server": request.form.get("server"),
-            "port": int(request.form.get("port", 25)),
+            "port": int(request.form.get("port", DEFAULT_SMTP_PORT)),
             "use_tls": request.form.get("use_tls") in ["on", "true", True],
             "use_ssl": request.form.get("use_ssl") in ["on", "true", True],
             "no_tls_verify": request.form.get("no_tls_verify")

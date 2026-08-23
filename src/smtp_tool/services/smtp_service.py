@@ -6,12 +6,10 @@ import smtplib
 import socket
 import ssl
 import time
-from email import encoders
 from email.mime.application import MIMEApplication
-from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import formataddr, formatdate, make_msgid
+from email.utils import formatdate, make_msgid
 from io import BytesIO
 from pathlib import Path
 

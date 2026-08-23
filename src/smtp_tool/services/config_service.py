@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 import logging
 import socket
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +27,7 @@ from smtp_tool.models import (
     Template,
     db,
 )
+from smtp_tool.services.smtp_service import DEFAULT_SMTP_PORT
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +108,7 @@ def add_profile(profile_data: dict[str, Any]) -> bool:
             existing.no_tls_verify = profile_data.get("no_tls_verify", False)
             existing.username = profile_data["username"]
             existing.password = profile_data["password"]
-            existing.updated_at = datetime.utcnow()
+            existing.updated_at = datetime.now(UTC)
         else:
             profile = Profile(
                 name=name,
@@ -196,7 +197,7 @@ def add_template(template_data: dict[str, Any]) -> bool:
             existing.subject = template_data.get("subject", "")
             existing.body_type = template_data.get("body_type", "plain")
             existing.body = template_data.get("body", "")
-            existing.updated_at = datetime.utcnow()
+            existing.updated_at = datetime.now(UTC)
         else:
             template = Template(
                 name=name,
@@ -401,21 +402,25 @@ def _ensure_default_settings() -> None:
     if Setting.query.count() > 0:
         return
 
-    for key, value in _DEFAULT_SETTINGS.items():
-        db.session.add(Setting(key=key, value=value))
+    try:
+        for key, value in _DEFAULT_SETTINGS.items():
+            db.session.add(Setting(key=key, value=value))
 
-    # Seed default saved addresses
-    default_sender = f"smtp@{socket.getfqdn()}"
-    db.session.add(
-        SavedAddress(email=default_sender, address_type="sender")
-    )
-    db.session.add(
-        SavedAddress(email="test@example.com", address_type="sender")
-    )
-    db.session.add(
-        SavedAddress(email="recipient@example.com", address_type="recipient")
-    )
-    db.session.commit()
+        # Seed default saved addresses (skip if already present)
+        default_sender = f"smtp@{socket.getfqdn()}"
+        for email, addr_type in [
+            (default_sender, "sender"),
+            ("test@example.com", "sender"),
+            ("recipient@example.com", "recipient"),
+        ]:
+            if not SavedAddress.query.filter_by(email=email, address_type=addr_type).first():
+                db.session.add(SavedAddress(email=email, address_type=addr_type))
+
+        db.session.commit()
+        logger.info("Initialized default settings")
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Failed to initialize default settings: {e}")
 
 
 def get_settings() -> dict[str, Any]:
@@ -590,7 +595,7 @@ def migrate_from_json(config_dir: str) -> None:
                     Profile(
                         name=name,
                         server=data.get("server", ""),
-                        port=int(data.get("port", 25)),
+                        port=int(data.get("port", DEFAULT_SMTP_PORT)),
                         use_tls=bool(data.get("use_tls", False)),
                         use_ssl=bool(data.get("use_ssl", False)),
                         no_tls_verify=bool(data.get("no_tls_verify", False)),

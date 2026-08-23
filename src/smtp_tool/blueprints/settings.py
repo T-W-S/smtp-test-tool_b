@@ -30,10 +30,7 @@ settings_bp = Blueprint("settings_bp", __name__)
 def settings_page():
     """Render the settings page for managing SMTP profiles."""
     smtp_profiles = config_service.get_profiles()
-    app_settings = config_service.get_settings()
-    return render_template(
-        "settings.html", smtp_profiles=smtp_profiles, settings=app_settings
-    )
+    return render_template("settings.html", smtp_profiles=smtp_profiles)
 
 
 # -----------------------------------------------------------------------

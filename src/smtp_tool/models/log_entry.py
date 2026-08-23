@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import JSON, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
@@ -25,4 +25,4 @@ class LogEntry(db.Model):
     attachments: Mapped[list | dict | None] = mapped_column(JSON, nullable=False)
     body: Mapped[str | None] = mapped_column(Text, nullable=True)
     body_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC), nullable=False)

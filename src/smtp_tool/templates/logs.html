@@ -344,11 +344,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Retry email button
     document.getElementById('retryEmailButton').addEventListener('click', function() {
-        // Find the last clicked view-log button to determine the log index
-        var activeButtons = document.querySelectorAll('.view-log');
-        var lastClickedIndex = null;
-
-        // We need to track which log was last viewed - use a data attribute on the modal
         var modalEl = document.getElementById('logDetailsModal');
         var index = parseInt(modalEl.dataset.currentLogIndex, 10);
 

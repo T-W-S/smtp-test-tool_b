@@ -22,7 +22,7 @@ from typing import Any
 from smtp_tool import create_app
 from smtp_tool.services import config_service
 from smtp_tool.services.email_validator import validate_email
-from smtp_tool.services.smtp_service import SMTPService
+from smtp_tool.services.smtp_service import DEFAULT_SMTP_PORT
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -62,7 +62,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--server", "-s", required=False, help="SMTP server address"
     )
     send_parser.add_argument(
-        "--port", "-P", type=int, default=25, help="SMTP server port (default: 25)"
+        "--port", "-P", type=int, default=DEFAULT_SMTP_PORT, help="SMTP server port (default: 25)"
     )
     send_parser.add_argument(
         "--tls", "-t", action="store_true", help="Use STARTTLS"
@@ -115,7 +115,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--server", "-s", required=False, help="SMTP server address"
     )
     test_parser.add_argument(
-        "--port", "-P", type=int, default=25, help="SMTP server port (default: 25)"
+        "--port", "-P", type=int, default=DEFAULT_SMTP_PORT, help="SMTP server port (default: 25)"
     )
     test_parser.add_argument(
         "--tls", "-t", action="store_true", help="Use STARTTLS"
@@ -142,7 +142,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--server", "-s", required=True, help="SMTP server address"
     )
     add_parser.add_argument(
-        "--port", "-P", type=int, default=25, help="SMTP server port (default: 25)"
+        "--port", "-P", type=int, default=DEFAULT_SMTP_PORT, help="SMTP server port (default: 25)"
     )
     add_parser.add_argument(
         "--tls", "-t", action="store_true", help="Use STARTTLS"
@@ -556,9 +556,9 @@ def main() -> int:
     # Create the Flask application for its app context (needed by
     # config_service which relies on SQLAlchemy / Flask-SQLAlchemy).
     app = create_app()
-    smtp_service = SMTPService()
 
     with app.app_context():
+        smtp_service = app.extensions["smtp_service"]
         if args.command == "send":
             return _handle_send(args, smtp_service)
 

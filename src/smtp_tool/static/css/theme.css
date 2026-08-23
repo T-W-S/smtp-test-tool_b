@@ -16,6 +16,7 @@
     --smtp-primary-light: rgba(230, 126, 34, 0.1);
     --smtp-primary-light-border: rgba(230, 126, 34, 0.2);
     --smtp-primary-focus-shadow: rgba(230, 126, 34, 0.25);
+    --smtp-primary-focus-border: rgba(230, 126, 34, 0.5);
     --smtp-primary-subtle-bg: rgba(230, 126, 34, 0.07);
 
     /* --- Success (darker green) ----------------------------------------- */
@@ -178,7 +179,7 @@ a:focus {
 .form-control:focus,
 .form-select:focus {
     box-shadow: 0 0 0 0.25rem var(--smtp-primary-focus-shadow);
-    border-color: rgba(230, 126, 34, 0.5);
+    border-color: var(--smtp-primary-focus-border);
 }
 
 /* HTML mode textarea */

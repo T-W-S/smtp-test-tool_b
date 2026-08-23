@@ -23,6 +23,9 @@ from smtp_tool.services.email_validator import validate_email
 
 logger = logging.getLogger(__name__)
 
+REQUEST_CACHE_WINDOW_SECS: int = 8
+REQUEST_CACHE_TTL_SECS: int = 30
+
 email_bp = Blueprint("email", __name__)
 
 
@@ -74,7 +77,7 @@ def send_email():
 
     if request_id in request_cache:
         cache_entry = request_cache[request_id]
-        if current_time - cache_entry["time"] < 8:
+        if current_time - cache_entry["time"] < REQUEST_CACHE_WINDOW_SECS:
             logger.warning("BLOCKING duplicate request: %s", request_id)
             return jsonify(cache_entry["result"])
 
@@ -82,7 +85,7 @@ def send_email():
     stale_keys = [
         k
         for k, v in request_cache.items()
-        if current_time - v.get("time", 0) >= 30
+        if current_time - v.get("time", 0) >= REQUEST_CACHE_TTL_SECS
     ]
     for k in stale_keys:
         del request_cache[k]

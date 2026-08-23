@@ -22,7 +22,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /install /usr/local
 
 COPY src/ ./src/
-COPY main.py ./
 
 RUN mkdir -p /data/config /data/logs && \
     chmod -R 777 /data
