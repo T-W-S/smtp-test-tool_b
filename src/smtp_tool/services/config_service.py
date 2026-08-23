@@ -308,69 +308,6 @@ def clear_logs() -> bool:
         return False
 
 
-def get_detailed_logs(
-    limit: int | None = None,
-    search_text: str | None = None,
-) -> list[dict[str, Any]]:
-    """Return logs with optional text filtering and row limit.
-
-    Results are sorted newest-first (descending timestamp).
-    """
-    try:
-        query = LogEntry.query
-
-        if search_text:
-            like_pattern = f"%{search_text}%"
-            query = query.filter(
-                db.or_(
-                    LogEntry.profile_name.ilike(like_pattern),
-                    LogEntry.sender.ilike(like_pattern),
-                    LogEntry.subject.ilike(like_pattern),
-                    LogEntry.status.ilike(like_pattern),
-                    LogEntry.error.ilike(like_pattern),
-                )
-            )
-
-        # Newest first
-        query = query.order_by(LogEntry.timestamp.desc())
-
-        if limit is not None and isinstance(limit, int) and limit > 0:
-            query = query.limit(limit)
-
-        entries: list[LogEntry] = query.all()
-
-        # Post-filter: also search inside JSON recipients field when search
-        # text is provided (mirrors the original behaviour that searched the
-        # joined recipients list).
-        if search_text:
-            needle = search_text.lower()
-            filtered: list[dict[str, Any]] = []
-            for e in entries:
-                filtered.append(_log_entry_to_dict(e))
-
-            # Also scan entries we might have missed because the recipients
-            # match lives inside a JSON column.  Re-query without the SQL
-            # filter and do a Python-side check for entries that were not
-            # already included.
-            all_query = LogEntry.query.order_by(LogEntry.timestamp.desc())
-            if limit is not None and isinstance(limit, int) and limit > 0:
-                all_query = all_query.limit(limit)
-            all_entries = all_query.all()
-            seen_ids = {e.id for e in entries}
-            for e in all_entries:
-                if e.id in seen_ids:
-                    continue
-                recipients_str = " ".join(e.recipients) if isinstance(e.recipients, list) else str(e.recipients or "")
-                if needle in recipients_str.lower():
-                    filtered.append(_log_entry_to_dict(e))
-            return filtered
-
-        return [_log_entry_to_dict(e) for e in entries]
-    except Exception as e:
-        logger.error(f"Failed to get detailed logs: {e}")
-        return []
-
-
 def _log_entry_to_dict(entry: LogEntry) -> dict[str, Any]:
     """Convert a :class:`LogEntry` ORM instance to a plain dict."""
     return {
