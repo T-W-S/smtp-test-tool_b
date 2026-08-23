@@ -976,4 +976,7 @@
       initTemplatesPage();
     }
   });
+
+  window.showToast = showToast;
+  window.showConfirmToast = showConfirmToast;
 })();
