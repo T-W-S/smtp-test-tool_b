@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Address Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Email Address Management</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Sender Addresses</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group mb-3" id="senderList">
+                        {% for email in saved_senders %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ email }}
+                            <div>
+                                <button class="btn btn-sm btn-outline-danger delete-sender" data-email="{{ email }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <form id="addSenderForm" class="mt-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="newSenderEmail" placeholder="Enter new sender email" required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Recipient Addresses</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group mb-3" id="recipientList">
+                        {% for email in saved_recipients %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ email }}
+                            <div>
+                                <button class="btn btn-sm btn-outline-danger delete-recipient" data-email="{{ email }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <form id="addRecipientForm" class="mt-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="newRecipientEmail" placeholder="Enter new recipient email" required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('email.index') }}" class="btn btn-secondary">Back to Mail Form</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add new sender
+    document.getElementById('addSenderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var emailInput = document.getElementById('newSenderEmail');
+        var email = emailInput.value;
+
+        if (!email) {
+            alert('Please enter an email address');
+            return;
+        }
+
+        fetch('/save_sender', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            alert('Error saving sender email');
+        });
+    });
+
+    // Add new recipient
+    document.getElementById('addRecipientForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var emailInput = document.getElementById('newRecipientEmail');
+        var email = emailInput.value;
+
+        if (!email) {
+            alert('Please enter an email address');
+            return;
+        }
+
+        fetch('/save_recipient', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            alert('Error saving recipient email');
+        });
+    });
+
+    // Delete sender buttons
+    document.querySelectorAll('.delete-sender').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var email = this.getAttribute('data-email');
+
+            if (confirm('Are you sure you want to delete this sender: ' + email + '?')) {
+                fetch('/delete_sender', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                    alert('Error deleting sender email');
+                });
+            }
+        });
+    });
+
+    // Delete recipient buttons
+    document.querySelectorAll('.delete-recipient').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var email = this.getAttribute('data-email');
+
+            if (confirm('Are you sure you want to delete this recipient: ' + email + '?')) {
+                fetch('/delete_recipient', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                    alert('Error deleting recipient email');
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
