@@ -1,0 +1,430 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Logs{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Email Sending Logs</h5>
+                <form id="clearLogsForm" action="{{ url_for('logs.clear_logs') }}" method="post">
+                    <button type="submit" class="btn btn-light btn-sm">
+                        <i class="fas fa-trash me-1"></i>Clear Logs
+                    </button>
+                </form>
+            </div>
+            <div class="card-body">
+                {% if not log_entries %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>No email logs found.
+                </div>
+                {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Profile</th>
+                                <th>Sender</th>
+                                <th>Recipients</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in log_entries|reverse %}
+                            <tr class="{% if log.status == 'Success' %}table-success{% else %}table-danger{% endif %}">
+                                <td>{{ log.timestamp }}</td>
+                                <td>{{ log.profile }}</td>
+                                <td>{{ log.sender }}</td>
+                                <td>
+                                    <span class="d-inline-block text-truncate" style="max-width: 200px;" title="{{ log.recipients|join(', ') }}">
+                                        {{ log.recipients|join(', ') }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="d-inline-block text-truncate" style="max-width: 200px;" title="{{ log.subject }}">
+                                        {{ log.subject }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if log.status == 'Success' %}
+                                    <span class="badge bg-success">Success</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Failed</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-info view-log" data-log-index="{{ loop.index0 }}">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Log Details Modal -->
+<div class="modal fade" id="logDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Email Log Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Timestamp:</strong> <span id="logTimestamp"></span></p>
+                        <p><strong>Profile:</strong> <span id="logProfile"></span></p>
+                        <p><strong>Status:</strong> <span id="logStatus"></span></p>
+                        <p><strong>Message ID:</strong> <span id="logMessageId" class="text-monospace small"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Sender:</strong> <span id="logSender"></span></p>
+                        <p><strong>Subject:</strong> <span id="logSubject"></span></p>
+                        <p><strong>Server:</strong> <span id="logServer"></span></p>
+                    </div>
+                </div>
+
+                <ul class="nav nav-tabs" id="logDetailTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="recipients-tab" data-bs-toggle="tab" data-bs-target="#recipients-content" type="button" role="tab">Recipients</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="attachments-tab" data-bs-toggle="tab" data-bs-target="#attachments-content" type="button" role="tab">Attachments</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="smtp-tab" data-bs-toggle="tab" data-bs-target="#smtp-content" type="button" role="tab">SMTP Traffic</button>
+                    </li>
+                    <li class="nav-item" role="presentation" id="error-tab-item">
+                        <button class="nav-link" id="error-tab" data-bs-toggle="tab" data-bs-target="#error-content" type="button" role="tab">Error</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content pt-3" id="logDetailTabsContent">
+                    <!-- Recipients Tab -->
+                    <div class="tab-pane fade show active" id="recipients-content" role="tabpanel" aria-labelledby="recipients-tab">
+                        <div class="mb-3">
+                            <p><strong>To:</strong></p>
+                            <ul id="logRecipients" class="list-group list-group-flush"></ul>
+                        </div>
+
+                        <div class="mb-3" id="logCcContainer">
+                            <p><strong>CC:</strong></p>
+                            <ul id="logCc" class="list-group list-group-flush"></ul>
+                        </div>
+
+                        <div class="mb-3" id="logBccContainer">
+                            <p><strong>BCC:</strong></p>
+                            <ul id="logBcc" class="list-group list-group-flush"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Attachments Tab -->
+                    <div class="tab-pane fade" id="attachments-content" role="tabpanel" aria-labelledby="attachments-tab">
+                        <div class="mb-3" id="logAttachmentsContainer">
+                            <ul id="logAttachments" class="list-group list-group-flush">
+                                <li class="list-group-item text-muted">No attachments</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- SMTP Traffic Tab -->
+                    <div class="tab-pane fade" id="smtp-content" role="tabpanel" aria-labelledby="smtp-tab">
+                        <div class="mb-3">
+                            <div class="card">
+                                <div class="card-header bg-secondary text-white">
+                                    <h6 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>SMTP Conversation</h6>
+                                </div>
+                                <div class="card-body bg-dark text-light p-3">
+                                    <pre id="logSmtpTraffic" class="mb-0" style="white-space: pre-wrap; font-size: 0.85rem; line-height: 1.4; color: #e9ecef;">No SMTP traffic data available</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Tab -->
+                    <div class="tab-pane fade" id="error-content" role="tabpanel" aria-labelledby="error-tab">
+                        <div class="mb-3">
+                            <div id="logError" class="alert alert-danger">No error information available</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="retryEmailButton">Retry Email</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Store logs data in JavaScript with safe JSON encoding
+var logEntries = {{ log_entries|tojson|safe }};
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // View log details
+    document.querySelectorAll('.view-log').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var index = parseInt(this.dataset.logIndex, 10);
+            var log = logEntries[logEntries.length - 1 - index]; // Reverse order from display
+
+            // Basic information
+            document.getElementById('logTimestamp').textContent = log.timestamp || 'N/A';
+            document.getElementById('logProfile').textContent = log.profile || 'N/A';
+            document.getElementById('logSender').textContent = log.sender || 'N/A';
+            document.getElementById('logSubject').textContent = log.subject || 'N/A';
+            document.getElementById('logServer').textContent = log.server || 'N/A';
+            document.getElementById('logMessageId').textContent = log.message_id || 'N/A';
+
+            // Set status with appropriate styling
+            var logStatusEl = document.getElementById('logStatus');
+            var errorTabItem = document.getElementById('error-tab-item');
+            var errorTab = document.getElementById('error-tab');
+
+            if (log.status === 'Success') {
+                logStatusEl.innerHTML = '<span class="badge bg-success">Success</span>';
+                // Hide error tab
+                errorTabItem.style.display = 'none';
+            } else {
+                logStatusEl.innerHTML = '<span class="badge bg-danger">Failed</span>';
+                document.getElementById('logError').textContent = log.error || 'Unknown error';
+                // Show error tab
+                errorTabItem.style.display = '';
+                // Switch to error tab if an error occurred
+                new bootstrap.Tab(errorTab).show();
+            }
+
+            // Recipients
+            var logRecipientsEl = document.getElementById('logRecipients');
+            logRecipientsEl.innerHTML = '';
+            if (log.recipients && log.recipients.length > 0) {
+                log.recipients.forEach(function(recipient) {
+                    logRecipientsEl.insertAdjacentHTML('beforeend', '<li class="list-group-item">' + recipient + '</li>');
+                });
+            } else {
+                logRecipientsEl.insertAdjacentHTML('beforeend', '<li class="list-group-item text-muted">None</li>');
+            }
+
+            // CC
+            var logCcEl = document.getElementById('logCc');
+            logCcEl.innerHTML = '';
+            if (log.cc && log.cc.length > 0) {
+                log.cc.forEach(function(cc) {
+                    logCcEl.insertAdjacentHTML('beforeend', '<li class="list-group-item">' + cc + '</li>');
+                });
+                document.getElementById('logCcContainer').style.display = '';
+            } else {
+                logCcEl.insertAdjacentHTML('beforeend', '<li class="list-group-item text-muted">None</li>');
+                document.getElementById('logCcContainer').style.display = '';
+            }
+
+            // BCC
+            var logBccEl = document.getElementById('logBcc');
+            logBccEl.innerHTML = '';
+            if (log.bcc && log.bcc.length > 0) {
+                log.bcc.forEach(function(bcc) {
+                    logBccEl.insertAdjacentHTML('beforeend', '<li class="list-group-item">' + bcc + '</li>');
+                });
+                document.getElementById('logBccContainer').style.display = '';
+            } else {
+                logBccEl.insertAdjacentHTML('beforeend', '<li class="list-group-item text-muted">None</li>');
+                document.getElementById('logBccContainer').style.display = '';
+            }
+
+            // Attachments
+            var logAttachmentsEl = document.getElementById('logAttachments');
+            logAttachmentsEl.innerHTML = '';
+            if (log.attachments && log.attachments.length > 0) {
+                log.attachments.forEach(function(attachment) {
+                    logAttachmentsEl.insertAdjacentHTML('beforeend',
+                        '<li class="list-group-item"><i class="fas fa-paperclip me-2"></i>' + attachment + '</li>');
+                });
+            } else {
+                logAttachmentsEl.insertAdjacentHTML('beforeend', '<li class="list-group-item text-muted">No attachments</li>');
+            }
+
+            // SMTP Traffic - format for better readability
+            var logSmtpTrafficEl = document.getElementById('logSmtpTraffic');
+            if (log.smtp_log && log.smtp_log.length > 0) {
+                var formattedLog = log.smtp_log.map(function(line) {
+                    // Clean up the line first - remove b' prefixes and escape sequences
+                    var cleanLine = line
+                        .replace(/^b'/, '')  // Remove b' prefix
+                        .replace(/'$/, '')   // Remove ' suffix
+                        .replace(/\\r\\n/g, '\n')  // Convert \r\n to actual newlines
+                        .replace(/\\n/g, '\n')     // Convert \n to actual newlines
+                        .replace(/\\'/g, "'")      // Convert \' to '
+                        .replace(/\\\\/g, '\\');   // Convert \\\\ to \\
+
+                    // Add visual indicators and formatting
+                    if (line.startsWith('send:')) {
+                        var content = cleanLine.substring(5).trim();
+                        // Format email headers with proper line breaks
+                        if (content.indexOf('\\r\\n') !== -1) {
+                            content = content.replace(/\\r\\n/g, '\n    ');
+                        }
+                        return '→ CLIENT: ' + content;
+                    } else if (line.startsWith('reply:')) {
+                        var content = cleanLine.substring(6).trim();
+                        return '← SERVER: ' + content;
+                    } else if (line.startsWith('data:')) {
+                        return '📤 DATA: ' + cleanLine.substring(5).trim();
+                    } else if (line.indexOf('Connection Info:') !== -1) {
+                        return '🔗 ' + cleanLine;
+                    } else if (line.indexOf('SSL/TLS Connection Details:') !== -1 || line.indexOf('TLS Connection Established:') !== -1) {
+                        return '🔐 ' + cleanLine;
+                    } else if (line.indexOf('Server Capabilities:') !== -1) {
+                        return '⚙️ ' + cleanLine;
+                    } else if (line.indexOf('Authentication Info:') !== -1) {
+                        return '🔑 ' + cleanLine;
+                    } else if (line.indexOf('Email Sending Started:') !== -1 || line.indexOf('Email Sending Completed:') !== -1) {
+                        return '⏰ ' + cleanLine;
+                    } else if (line.indexOf('Total Duration:') !== -1) {
+                        return '⏱️ ' + cleanLine;
+                    } else if (line.indexOf('connect') !== -1 || line.indexOf('Connected') !== -1) {
+                        return '🔗 CONNECTION: ' + cleanLine;
+                    } else if (line.indexOf('error') !== -1 || line.indexOf('Error') !== -1) {
+                        return '❌ ERROR: ' + cleanLine;
+                    } else if (line.indexOf('success') !== -1 || line.indexOf('Success') !== -1 || line.indexOf('Ok') !== -1 || line.indexOf('Authentication successful') !== -1) {
+                        return '✅ SUCCESS: ' + cleanLine;
+                    } else if (line.indexOf('retcode') !== -1) {
+                        var content = cleanLine.replace('reply: retcode', 'Response Code');
+                        return '📋 ' + content;
+                    } else {
+                        return '   ' + cleanLine;
+                    }
+                }).join('\n');
+
+                // Further clean up the formatted log for better presentation
+                formattedLog = formattedLog
+                    .replace(/Content-Type:/g, '\nContent-Type:')
+                    .replace(/MIME-Version:/g, '\nMIME-Version:')
+                    .replace(/From:/g, '\nFrom:')
+                    .replace(/To:/g, '\nTo:')
+                    .replace(/Subject:/g, '\nSubject:')
+                    .replace(/Date:/g, '\nDate:')
+                    .replace(/Message-ID:/g, '\nMessage-ID:')
+                    .replace(/Content-Disposition:/g, '\nContent-Disposition:')
+                    .replace(/--===============/g, '\n--===============');
+
+                logSmtpTrafficEl.textContent = formattedLog;
+            } else {
+                logSmtpTrafficEl.textContent = 'No SMTP traffic data available';
+            }
+
+            // Show the modal - default to recipients tab unless there's an error
+            var modalEl = document.getElementById('logDetailsModal');
+            var recipientsTab = document.getElementById('recipients-tab');
+
+            if (log.status !== 'Success') {
+                // First show modal, then switch tabs
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                new bootstrap.Tab(errorTab).show();
+            } else {
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                new bootstrap.Tab(recipientsTab).show();
+            }
+        });
+    });
+
+    // Retry email button
+    document.getElementById('retryEmailButton').addEventListener('click', function() {
+        var modalEl = document.getElementById('logDetailsModal');
+        var index = parseInt(modalEl.dataset.currentLogIndex, 10);
+
+        if (!isNaN(index)) {
+            var log = logEntries[logEntries.length - 1 - index];
+
+            if (log) {
+                // Create form to retry the email
+                var form = document.createElement('form');
+                form.method = 'GET';
+                form.action = '/';
+
+                // Add profile as query parameter if available
+                if (log.profile) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'profile';
+                    input.value = log.profile;
+                    form.appendChild(input);
+                }
+
+                // Add sender as query parameter if available
+                if (log.sender) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'sender';
+                    input.value = log.sender;
+                    form.appendChild(input);
+                }
+
+                // Add recipients as query parameter if available
+                if (log.recipients && log.recipients.length > 0) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'recipients';
+                    input.value = log.recipients.join(',');
+                    form.appendChild(input);
+                }
+
+                // Add subject as query parameter if available
+                if (log.subject) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'subject';
+                    input.value = log.subject;
+                    form.appendChild(input);
+                }
+
+                // Submit the form to navigate to the main page with pre-filled values
+                document.body.appendChild(form);
+                form.submit();
+            } else {
+                if (typeof showToast === 'function') showToast('Error retrieving log information for retry', 'danger');
+            }
+        } else {
+            if (typeof showToast === 'function') showToast('Error retrieving log information for retry', 'danger');
+        }
+    });
+
+    // Store current log index when a view-log button is clicked (for retry)
+    document.querySelectorAll('.view-log').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var modalEl = document.getElementById('logDetailsModal');
+            modalEl.dataset.currentLogIndex = this.dataset.logIndex;
+        });
+    });
+
+    // Clear logs confirmation
+    var clearForm = document.getElementById('clearLogsForm');
+    if (clearForm) {
+        clearForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (typeof showConfirmToast === 'function') {
+                showConfirmToast('Are you sure you want to clear all logs?', function() {
+                    clearForm.submit();
+                });
+            } else {
+                clearForm.submit();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
