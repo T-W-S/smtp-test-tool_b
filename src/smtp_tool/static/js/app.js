@@ -482,11 +482,8 @@
         if (recipientList.length === 1) {
           emailToSave = recipientList[0];
         } else {
-          emailToSave = prompt(
-            'Multiple recipients found. Please enter the one you want to save:'
-          );
-          if (!emailToSave) return;
-          emailToSave = emailToSave.trim();
+          emailToSave = recipientList[0];
+          showToast('Saved first recipient: ' + emailToSave, 'info');
         }
 
         if (!emailToSave) {

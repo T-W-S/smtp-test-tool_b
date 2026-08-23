@@ -224,58 +224,58 @@ class SMTPService:
             if use_ssl:
                 context = _create_ssl_context(no_tls_verify)
                 smtp = smtplib.SMTP_SSL(server, port, local_hostname=hostname, context=context)
-
-                try:
-                    _extract_tls_info(smtp.sock, smtp_log, "SSL/TLS Connection Details")  # type: ignore[arg-type]
-                except Exception as exc:
-                    smtp_log.append(f"SSL Info: {exc}")
             else:
                 smtp = smtplib.SMTP(server, port, local_hostname=hostname)
 
-            smtp.set_debuglevel(1)
-            _capture_smtp_log(smtp, smtp_log)
+            with smtp:
+                if use_ssl:
+                    try:
+                        _extract_tls_info(smtp.sock, smtp_log, "SSL/TLS Connection Details")  # type: ignore[arg-type]
+                    except Exception as exc:
+                        smtp_log.append(f"SSL Info: {exc}")
 
-            if ehlo_as:
-                smtp.ehlo(ehlo_as)
-                if hasattr(smtp, "esmtp_features") and smtp.esmtp_features:
-                    smtp_log.append("Server Capabilities:")
-                    for feature, params in smtp.esmtp_features.items():
-                        if params:
-                            smtp_log.append(f"  - {feature}: {params}")
-                        else:
-                            smtp_log.append(f"  - {feature}")
-            elif helo_as:
-                smtp.helo(helo_as)
+                smtp.set_debuglevel(1)
+                _capture_smtp_log(smtp, smtp_log)
 
-            if use_tls and not use_ssl:
-                context = _create_ssl_context(no_tls_verify)
-                smtp.starttls(context=context)
-
-                try:
-                    _extract_tls_info(smtp.sock, smtp_log, "TLS Connection Established")  # type: ignore[arg-type]
-                except Exception as exc:
-                    smtp_log.append(
-                        f"TLS Info: Could not retrieve detailed TLS information: {exc}"
-                    )
-
-                # Re-EHLO after STARTTLS per RFC 3207
                 if ehlo_as:
                     smtp.ehlo(ehlo_as)
+                    if hasattr(smtp, "esmtp_features") and smtp.esmtp_features:
+                        smtp_log.append("Server Capabilities:")
+                        for feature, params in smtp.esmtp_features.items():
+                            if params:
+                                smtp_log.append(f"  - {feature}: {params}")
+                            else:
+                                smtp_log.append(f"  - {feature}")
+                elif helo_as:
+                    smtp.helo(helo_as)
 
-            if username and password:
-                if hasattr(smtp, "esmtp_features") and "auth" in smtp.esmtp_features:
-                    auth_methods = smtp.esmtp_features["auth"]
-                    smtp_log.append("Authentication Info:")
-                    smtp_log.append(f"  - Methods Available: {auth_methods}")
-                    smtp_log.append(f"  - Using: {username}")
+                if use_tls and not use_ssl:
+                    context = _create_ssl_context(no_tls_verify)
+                    smtp.starttls(context=context)
 
-                smtp.login(username, password)
-                smtp_log.append("  - Status: Authentication successful")
+                    try:
+                        _extract_tls_info(smtp.sock, smtp_log, "TLS Connection Established")  # type: ignore[arg-type]
+                    except Exception as exc:
+                        smtp_log.append(
+                            f"TLS Info: Could not retrieve detailed TLS information: {exc}"
+                        )
 
-            all_recipients = recipients + cc + bcc
-            smtp.sendmail(sender, all_recipients, msg.as_string(), mail_options=mail_options)
+                    # Re-EHLO after STARTTLS per RFC 3207
+                    if ehlo_as:
+                        smtp.ehlo(ehlo_as)
 
-            smtp.quit()
+                if username and password:
+                    if hasattr(smtp, "esmtp_features") and "auth" in smtp.esmtp_features:
+                        auth_methods = smtp.esmtp_features["auth"]
+                        smtp_log.append("Authentication Info:")
+                        smtp_log.append(f"  - Methods Available: {auth_methods}")
+                        smtp_log.append(f"  - Using: {username}")
+
+                    smtp.login(username, password)
+                    smtp_log.append("  - Status: Authentication successful")
+
+                all_recipients = recipients + cc + bcc
+                smtp.sendmail(sender, all_recipients, msg.as_string(), mail_options=mail_options)
 
             end_time = time.time()
             duration = end_time - start_time
@@ -321,39 +321,38 @@ class SMTPService:
             else:
                 smtp = smtplib.SMTP(server, port, local_hostname=hostname)
 
-            smtp.set_debuglevel(1)
-            _capture_smtp_log(smtp, smtp_log)
+            with smtp:
+                smtp.set_debuglevel(1)
+                _capture_smtp_log(smtp, smtp_log)
 
-            if ehlo_as:
-                server_info = smtp.ehlo(ehlo_as)
-            elif helo_as:
-                server_info = smtp.helo(helo_as)
-                try:
-                    server_info = smtp.ehlo()
-                except Exception:
-                    pass
-            else:
-                server_info = smtp.ehlo()
-
-            if use_tls and not use_ssl:
-                context = _create_ssl_context(no_tls_verify)
-                smtp.starttls(context=context)
                 if ehlo_as:
                     server_info = smtp.ehlo(ehlo_as)
+                elif helo_as:
+                    server_info = smtp.helo(helo_as)
+                    try:
+                        server_info = smtp.ehlo()
+                    except Exception:
+                        pass
                 else:
                     server_info = smtp.ehlo()
 
-            if username and password:
-                smtp.login(username, password)
+                if use_tls and not use_ssl:
+                    context = _create_ssl_context(no_tls_verify)
+                    smtp.starttls(context=context)
+                    if ehlo_as:
+                        server_info = smtp.ehlo(ehlo_as)
+                    else:
+                        server_info = smtp.ehlo()
 
-            capabilities: list[str] = []
-            if hasattr(server_info, "__getitem__") and len(server_info) > 1:
-                for item in server_info[1]:
-                    if isinstance(item, bytes):
-                        item = item.decode("utf-8")
-                    capabilities.append(item)
+                if username and password:
+                    smtp.login(username, password)
 
-            smtp.quit()
+                capabilities: list[str] = []
+                if hasattr(server_info, "__getitem__") and len(server_info) > 1:
+                    for item in server_info[1]:
+                        if isinstance(item, bytes):
+                            item = item.decode("utf-8")
+                        capabilities.append(item)
 
             logger.info("Successfully connected to SMTP server %s:%d", server, port)
             return {

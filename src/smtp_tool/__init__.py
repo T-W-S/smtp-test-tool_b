@@ -6,6 +6,7 @@ registers all blueprints and sets up logging.
 
 from __future__ import annotations
 
+import json
 import logging
 import logging.handlers
 import os
@@ -29,11 +30,12 @@ def create_app(test_config: dict | None = None) -> Flask:
     # Resolve paths -------------------------------------------------------
     config_dir = os.environ.get(
         "SMTP_CONFIG_DIR",
-        os.path.join(os.path.expanduser("~"), ".smtp_tool"),
+        str(Path.home() / ".smtp_tool"),
     )
-    os.makedirs(config_dir, exist_ok=True)
+    Path(config_dir).mkdir(parents=True, exist_ok=True)
 
-    db_uri = f"sqlite:///{os.path.join(config_dir, 'smtp_tool.db')}"
+    db_path = Path(config_dir) / "smtp_tool.db"
+    db_uri = f"sqlite:///{db_path}"
 
     # Create Flask app ----------------------------------------------------
     pkg_dir = Path(__file__).resolve().parent
@@ -133,34 +135,46 @@ def create_app(test_config: dict | None = None) -> Flask:
 # -----------------------------------------------------------------------
 
 
+class _JSONFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        log_data = {
+            "timestamp": self.formatTime(record),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+        }
+        if record.exc_info and record.exc_info[1]:
+            log_data["exception"] = self.formatException(record.exc_info)
+        return json.dumps(log_data)
+
+
 def _configure_logging(app: Flask) -> None:
-    """Set up rotating file + stream handlers."""
-    log_dir = os.environ.get("SMTP_LOG_DIR", ".")
-    os.makedirs(log_dir, exist_ok=True)
+    log_dir_path = Path(os.environ.get("SMTP_LOG_DIR", "."))
+    log_dir_path.mkdir(parents=True, exist_ok=True)
 
     log_level_name = os.environ.get("LOG_LEVEL", "DEBUG").upper()
     log_level = getattr(logging, log_level_name, logging.DEBUG)
 
-    formatter = logging.Formatter(
+    text_formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
+    is_production = not app.debug and not app.testing
+
     file_handler = logging.handlers.RotatingFileHandler(
-        os.path.join(log_dir, "smtp_tool.log"),
-        maxBytes=10_485_760,  # 10 MB
+        str(log_dir_path / "smtp_tool.log"),
+        maxBytes=10_485_760,
         backupCount=5,
     )
     file_handler.setLevel(log_level)
-    file_handler.setFormatter(formatter)
+    file_handler.setFormatter(_JSONFormatter() if is_production else text_formatter)
 
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(log_level)
-    stream_handler.setFormatter(formatter)
+    stream_handler.setFormatter(text_formatter)
 
-    # Configure the root logger so all modules pick it up
     root_logger = logging.getLogger()
     root_logger.setLevel(log_level)
-    # Avoid duplicate handlers when create_app is called more than once
     if not root_logger.handlers:
         root_logger.addHandler(file_handler)
         root_logger.addHandler(stream_handler)
