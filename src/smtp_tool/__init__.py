@@ -36,13 +36,11 @@ def create_app(test_config: dict | None = None) -> Flask:
     db_uri = f"sqlite:///{os.path.join(config_dir, 'smtp_tool.db')}"
 
     # Create Flask app ----------------------------------------------------
-    # Use the *project-root* ``templates/`` folder that ships with the
-    # original monolithic app.  ``static/`` lives under the package.
-    root_dir = Path(__file__).resolve().parent.parent.parent  # repo root
+    pkg_dir = Path(__file__).resolve().parent
     app = Flask(
         __name__,
-        template_folder=str(root_dir / "templates"),
-        static_folder=str(Path(__file__).resolve().parent / "static"),
+        template_folder=str(pkg_dir / "templates"),
+        static_folder=str(pkg_dir / "static"),
     )
 
     # Core config ---------------------------------------------------------
