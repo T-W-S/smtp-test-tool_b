@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (typeof showToast === 'function') showToast('Error retrieving log information for retry', 'danger');
             }
         } else {
-            alert('Error retrieving log information for retry');
+            if (typeof showToast === 'function') showToast('Error retrieving log information for retry', 'danger');
         }
     });
 

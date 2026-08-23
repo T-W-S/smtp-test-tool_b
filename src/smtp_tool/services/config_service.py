@@ -14,9 +14,9 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import socket
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from smtp_tool.models import (
@@ -566,15 +566,15 @@ def migrate_from_json(config_dir: str) -> None:
     successful import each JSON file is renamed to ``*.json.migrated`` so that
     the migration is idempotent.
     """
+    config_path = Path(config_dir)
     json_files = {
-        "profiles": os.path.join(config_dir, "profiles.json"),
-        "templates": os.path.join(config_dir, "templates.json"),
-        "logs": os.path.join(config_dir, "logs.json"),
-        "settings": os.path.join(config_dir, "settings.json"),
+        "profiles": config_path / "profiles.json",
+        "templates": config_path / "templates.json",
+        "logs": config_path / "logs.json",
+        "settings": config_path / "settings.json",
     }
 
-    # Check whether any JSON files exist
-    existing_files = {k: v for k, v in json_files.items() if os.path.isfile(v)}
+    existing_files = {k: v for k, v in json_files.items() if v.is_file()}
     if not existing_files:
         return  # nothing to migrate
 
@@ -701,10 +701,11 @@ def migrate_from_json(config_dir: str) -> None:
         logger.info("JSON-to-SQLite migration completed")
 
 
-def _rename_migrated(filepath: str) -> None:
+def _rename_migrated(filepath: str | Path) -> None:
     """Rename a successfully migrated JSON file."""
     try:
-        os.rename(filepath, filepath + ".migrated")
+        p = Path(filepath)
+        p.rename(p.with_suffix(".json.migrated"))
     except OSError as e:
         logger.warning(f"Could not rename {filepath}: {e}")
 

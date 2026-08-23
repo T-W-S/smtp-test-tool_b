@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+from pathlib import Path
 
 from flask import (
     Blueprint,
@@ -74,15 +75,15 @@ def add_template():
         attachment_file = request.files.get("attachment")
         if attachment_file and attachment_file.filename:
             try:
-                config_dir = os.environ.get(
+                config_dir = Path(os.environ.get(
                     "SMTP_CONFIG_DIR",
-                    os.path.join(os.path.expanduser("~"), ".smtp_tool"),
-                )
-                attachment_dir = os.path.join(config_dir, "attachments")
-                os.makedirs(attachment_dir, exist_ok=True)
+                    str(Path.home() / ".smtp_tool"),
+                ))
+                attachment_dir = config_dir / "attachments"
+                attachment_dir.mkdir(parents=True, exist_ok=True)
 
-                attachment_path = os.path.join(
-                    attachment_dir, secure_filename(attachment_file.filename)
+                attachment_path = str(
+                    attachment_dir / secure_filename(attachment_file.filename)
                 )
                 attachment_file.save(attachment_path)
 

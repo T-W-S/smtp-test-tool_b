@@ -5,10 +5,10 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-import os
 import socket
 import time
 from datetime import datetime
+from pathlib import Path
 
 from flask import (
     Blueprint,
@@ -135,7 +135,7 @@ def send_email():
             files = request.files.getlist("attachments")
             for file in files:
                 if file.filename:
-                    temp_path = os.path.join("/tmp", file.filename)
+                    temp_path = str(Path("/tmp") / file.filename)
                     file.save(temp_path)
                     attachments.append(temp_path)
 
@@ -151,14 +151,14 @@ def send_email():
                         malformed=attachment_data.get("malformed", False),
                         active_content=attachment_data.get("active_content", False),
                     )
-                    temp_path = os.path.join("/tmp", filename)
+                    temp_path = str(Path("/tmp") / filename)
                     with open(temp_path, "wb") as f:
                         f.write(data)
                     attachments.append(temp_path)
 
                 elif attachment_type == "eicar":
                     filename, data = smtp_service.create_eicar_attachment()
-                    temp_path = os.path.join("/tmp", filename)
+                    temp_path = str(Path("/tmp") / filename)
                     with open(temp_path, "wb") as f:
                         f.write(data)
                     attachments.append(temp_path)
@@ -201,8 +201,8 @@ def send_email():
 
         # Clean up temporary files
         for attachment in attachments:
-            if os.path.exists(attachment):
-                os.remove(attachment)
+            if Path(attachment).exists():
+                Path(attachment).unlink(missing_ok=True)
 
         if result["success"]:
             log_entry: dict = {
@@ -216,7 +216,7 @@ def send_email():
                 "subject": subject,
                 "status": "Success",
                 "attachments": (
-                    [os.path.basename(att) for att in attachments]
+                    [Path(att).name for att in attachments]
                     if attachments
                     else []
                 ),
@@ -249,7 +249,7 @@ def send_email():
                 "status": "Failed",
                 "error": result["error"],
                 "attachments": (
-                    [os.path.basename(att) for att in attachments]
+                    [Path(att).name for att in attachments]
                     if attachments
                     else []
                 ),
