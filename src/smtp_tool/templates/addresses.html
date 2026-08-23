@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Address Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Email Address Management</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Sender Addresses</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group mb-3" id="senderList">
+                        {% for email in saved_senders %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ email }}
+                            <div>
+                                <button class="btn btn-sm btn-outline-danger delete-sender" data-email="{{ email }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <form id="addSenderForm" class="mt-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="newSenderEmail" placeholder="Enter new sender email" required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Recipient Addresses</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group mb-3" id="recipientList">
+                        {% for email in saved_recipients %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ email }}
+                            <div>
+                                <button class="btn btn-sm btn-outline-danger delete-recipient" data-email="{{ email }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <form id="addRecipientForm" class="mt-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="newRecipientEmail" placeholder="Enter new recipient email" required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('email.index') }}" class="btn btn-secondary">Back to Mail Form</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function _toast(msg, type) {
+        if (typeof showToast === 'function') { showToast(msg, type); }
+    }
+
+    function _deleteAddress(url, email) {
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.success) { window.location.reload(); }
+            else { _toast('Error: ' + data.message, 'danger'); }
+        })
+        .catch(function() { _toast('Error deleting email', 'danger'); });
+    }
+
+    function _saveAddress(url, email) {
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.success) { window.location.reload(); }
+            else { _toast('Error: ' + data.message, 'danger'); }
+        })
+        .catch(function() { _toast('Error saving email', 'danger'); });
+    }
+
+    document.getElementById('addSenderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var email = document.getElementById('newSenderEmail').value;
+        if (!email) { _toast('Please enter an email address', 'warning'); return; }
+        _saveAddress('/save_sender', email);
+    });
+
+    document.getElementById('addRecipientForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var email = document.getElementById('newRecipientEmail').value;
+        if (!email) { _toast('Please enter an email address', 'warning'); return; }
+        _saveAddress('/save_recipient', email);
+    });
+
+    document.querySelectorAll('.delete-sender').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var email = this.getAttribute('data-email');
+            if (typeof showConfirmToast === 'function') {
+                showConfirmToast('Delete sender ' + email + '?', function() {
+                    _deleteAddress('/delete_sender', email);
+                });
+            } else {
+                _deleteAddress('/delete_sender', email);
+            }
+        });
+    });
+
+    document.querySelectorAll('.delete-recipient').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var email = this.getAttribute('data-email');
+            if (typeof showConfirmToast === 'function') {
+                showConfirmToast('Delete recipient ' + email + '?', function() {
+                    _deleteAddress('/delete_recipient', email);
+                });
+            } else {
+                _deleteAddress('/delete_recipient', email);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

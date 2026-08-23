@@ -1,0 +1,527 @@
+/* ==========================================================================
+   SMTP Test Tool — Consolidated Theme
+   Dark theme with orange accents, built on Bootstrap 5.3.3 dark mode.
+   Replaces: style.css, orange-theme.css, orange-minimal.css, theme-override.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS Custom Properties
+   -------------------------------------------------------------------------- */
+:root,
+:root[data-bs-theme="dark"] {
+    /* --- Brand / accent -------------------------------------------------- */
+    --smtp-primary: #e67e22;
+    --smtp-primary-hover: #d35400;
+    --smtp-primary-active: #c0392b;
+    --smtp-primary-light: rgba(230, 126, 34, 0.1);
+    --smtp-primary-light-border: rgba(230, 126, 34, 0.2);
+    --smtp-primary-focus-shadow: rgba(230, 126, 34, 0.25);
+    --smtp-primary-focus-border: rgba(230, 126, 34, 0.5);
+    --smtp-primary-subtle-bg: rgba(230, 126, 34, 0.07);
+
+    /* --- Success (darker green) ----------------------------------------- */
+    --smtp-success: #186a3b;
+    --smtp-success-hover: #0e4023;
+    --smtp-success-active: #0a2e17;
+    --smtp-success-light: rgba(24, 106, 59, 0.1);
+    --smtp-success-light-border: rgba(24, 106, 59, 0.2);
+
+    /* --- Danger ---------------------------------------------------------- */
+    --smtp-danger: #dc3545;
+    --smtp-danger-hover: #bb2d3b;
+
+    /* --- Warning --------------------------------------------------------- */
+    --smtp-warning: #ffc107;
+    --smtp-warning-hover: #ffca2c;
+
+    /* --- Layout backgrounds ---------------------------------------------- */
+    --smtp-bg-darker: #252833;
+    --smtp-bg-lighter: #2e3241;
+
+    /* --- Borders & overlays --------------------------------------------- */
+    --smtp-border-subtle: rgba(255, 255, 255, 0.1);
+    --smtp-border-input: rgba(255, 255, 255, 0.15);
+    --smtp-text-muted: rgba(255, 255, 255, 0.5);
+    --smtp-text-light: rgba(255, 255, 255, 0.85);
+
+    /* --- Radii & shadows ------------------------------------------------ */
+    --border-radius-sm: 0.375rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --box-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+    --box-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.16);
+    --transition-speed: 0.2s;
+
+    /* --- Bootstrap variable overrides ----------------------------------- */
+    --bs-primary: var(--smtp-primary);
+    --bs-primary-rgb: 230, 126, 34;
+    --bs-info: var(--smtp-primary);
+    --bs-info-rgb: 230, 126, 34;
+    --bs-success: var(--smtp-success);
+    --bs-success-rgb: 24, 106, 59;
+    --bs-link-color: var(--smtp-primary);
+    --bs-link-color-rgb: 230, 126, 34;
+    --bs-link-hover-color: var(--smtp-primary-hover);
+    --bs-link-hover-color-rgb: 211, 84, 0;
+}
+
+/* --------------------------------------------------------------------------
+   2. Base styles
+   -------------------------------------------------------------------------- */
+body {
+    padding-bottom: 60px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+}
+
+/* Links */
+a {
+    color: var(--smtp-primary);
+}
+
+a:hover,
+a:focus {
+    color: var(--smtp-primary-hover);
+}
+
+/* --------------------------------------------------------------------------
+   3. Navbar
+   -------------------------------------------------------------------------- */
+.navbar {
+    box-shadow: var(--box-shadow-sm);
+    padding: 0.75rem 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   4. Cards
+   -------------------------------------------------------------------------- */
+.card {
+    height: 100%;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow-sm);
+    border: 1px solid var(--smtp-border-subtle);
+    transition: transform var(--transition-speed),
+        box-shadow var(--transition-speed);
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-md);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--smtp-border-subtle);
+    font-weight: 600;
+}
+
+.card-header:first-child {
+    border-radius: calc(var(--border-radius-md) - 1px)
+        calc(var(--border-radius-md) - 1px) 0 0;
+}
+
+.card-header.bg-info,
+.card-header.bg-primary {
+    background-color: var(--smtp-primary);
+}
+
+.card-header.bg-success {
+    background-color: var(--smtp-success);
+}
+
+/* --------------------------------------------------------------------------
+   5. Container
+   -------------------------------------------------------------------------- */
+.container {
+    margin-bottom: 2rem;
+    max-width: 1280px;
+    padding: 0 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   6. Footer
+   -------------------------------------------------------------------------- */
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Tables
+   -------------------------------------------------------------------------- */
+.table-responsive {
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--smtp-primary-light);
+}
+
+/* --------------------------------------------------------------------------
+   8. Forms
+   -------------------------------------------------------------------------- */
+.form-control,
+.form-select {
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--smtp-border-input);
+    padding: 0.625rem 0.875rem;
+    transition: border-color var(--transition-speed),
+        box-shadow var(--transition-speed);
+}
+
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.25rem var(--smtp-primary-focus-shadow);
+    border-color: var(--smtp-primary-focus-border);
+}
+
+/* HTML mode textarea */
+textarea.html-mode {
+    font-family: "Courier New", monospace;
+    background-color: var(--smtp-primary-subtle-bg);
+    border-color: var(--smtp-primary-hover);
+}
+
+textarea.html-mode:focus {
+    border-color: var(--smtp-primary-hover);
+    box-shadow: 0 0 0 0.25rem var(--smtp-primary-focus-shadow);
+}
+
+/* Select dropdowns */
+select.form-select {
+    height: auto;
+    appearance: auto;
+}
+
+/* Input group text */
+.input-group-text {
+    background-color: var(--smtp-primary-light);
+    border-color: var(--smtp-primary-light-border);
+    color: var(--smtp-primary);
+}
+
+/* --------------------------------------------------------------------------
+   9. Dropdowns
+   -------------------------------------------------------------------------- */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle::after {
+    margin-left: 0.5em;
+}
+
+.dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--smtp-border-input);
+    box-shadow: var(--box-shadow-md);
+    padding: 0.5rem 0;
+    z-index: 1050;
+    background-color: var(--smtp-bg-darker);
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: background-color var(--transition-speed);
+    color: var(--smtp-text-light);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--smtp-primary-light);
+    color: #fff;
+}
+
+.dropdown-divider {
+    border-top: 1px solid var(--smtp-border-subtle);
+    margin: 0.5rem 0;
+}
+
+.dropdown-header {
+    color: var(--smtp-text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   10. Modals
+   -------------------------------------------------------------------------- */
+.modal-content {
+    border-radius: var(--border-radius-lg);
+    border: none;
+    box-shadow: var(--box-shadow-lg);
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--smtp-border-subtle);
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--smtp-border-subtle);
+    padding: 1.25rem 1.5rem;
+}
+
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+}
+
+.modal-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. Buttons
+   -------------------------------------------------------------------------- */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    transition: all var(--transition-speed) ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow-sm);
+}
+
+/* Primary */
+.btn-primary {
+    background-color: var(--smtp-primary);
+    background-image: linear-gradient(
+        to right,
+        var(--smtp-primary),
+        var(--smtp-primary-hover)
+    );
+    border-color: var(--smtp-primary-hover);
+    color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--smtp-primary-hover);
+    background-image: none;
+    border-color: var(--smtp-primary-active);
+    color: #fff;
+}
+
+/* Info — aliased to primary orange */
+.btn-info {
+    background-color: var(--smtp-primary);
+    background-image: linear-gradient(
+        to right,
+        var(--smtp-primary),
+        var(--smtp-primary-hover)
+    );
+    border-color: var(--smtp-primary-hover);
+    color: #fff;
+}
+
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:active {
+    background-color: var(--smtp-primary-hover);
+    background-image: none;
+    border-color: var(--smtp-primary-hover);
+    color: #fff;
+}
+
+/* Success */
+.btn-success {
+    background-color: var(--smtp-success);
+    background-image: linear-gradient(
+        to right,
+        var(--smtp-success),
+        var(--smtp-success-hover)
+    );
+    border-color: var(--smtp-success-hover);
+    color: #fff;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+    background-color: var(--smtp-success-hover);
+    background-image: none;
+    border-color: var(--smtp-success-active);
+    color: #fff;
+}
+
+/* Secondary */
+.btn-secondary {
+    background-image: linear-gradient(to right, #6c757d, #5a6268);
+}
+
+/* Danger */
+.btn-danger {
+    background-image: linear-gradient(
+        to right,
+        var(--smtp-danger),
+        var(--smtp-danger-hover)
+    );
+}
+
+/* Warning */
+.btn-warning {
+    background-image: linear-gradient(
+        to right,
+        var(--smtp-warning),
+        var(--smtp-warning-hover)
+    );
+}
+
+/* --------------------------------------------------------------------------
+   12. Utility / Bootstrap class overrides (orange replaces blue/info)
+   -------------------------------------------------------------------------- */
+/* Text */
+.text-primary {
+    color: var(--smtp-primary);
+}
+
+.text-info {
+    color: var(--smtp-primary);
+}
+
+.text-success {
+    color: var(--smtp-success);
+}
+
+/* Backgrounds */
+.bg-primary {
+    background-color: var(--smtp-primary);
+}
+
+.bg-info {
+    background-color: var(--smtp-primary);
+}
+
+.bg-success {
+    background-color: var(--smtp-success);
+}
+
+/* --------------------------------------------------------------------------
+   13. Badges
+   -------------------------------------------------------------------------- */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    border-radius: 50rem;
+}
+
+.badge.bg-info {
+    background-color: var(--smtp-primary);
+}
+
+.badge.bg-success {
+    background-color: var(--smtp-success);
+}
+
+/* --------------------------------------------------------------------------
+   14. Alerts
+   -------------------------------------------------------------------------- */
+.alert {
+    border-radius: var(--border-radius-md);
+    border: none;
+    box-shadow: var(--box-shadow-sm);
+}
+
+.alert-info {
+    background-color: var(--smtp-primary-light);
+    border-color: var(--smtp-primary-light-border);
+    color: var(--smtp-primary);
+}
+
+.alert-success {
+    background-color: var(--smtp-success-light);
+    border-color: var(--smtp-success-light-border);
+    color: var(--smtp-success);
+}
+
+/* --------------------------------------------------------------------------
+   15. Progress bars
+   -------------------------------------------------------------------------- */
+.progress-bar.bg-info {
+    background-color: var(--smtp-primary);
+}
+
+.progress-bar.bg-success {
+    background-color: var(--smtp-success);
+}
+
+/* --------------------------------------------------------------------------
+   16. Nav pills
+   -------------------------------------------------------------------------- */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: var(--smtp-primary);
+}
+
+/* --------------------------------------------------------------------------
+   17. List groups
+   -------------------------------------------------------------------------- */
+.list-group-item.active {
+    background-color: var(--smtp-primary);
+    border-color: var(--smtp-primary-hover);
+}
+
+/* --------------------------------------------------------------------------
+   18. Pagination
+   -------------------------------------------------------------------------- */
+.pagination .page-item.active .page-link {
+    background-color: var(--smtp-primary);
+    border-color: var(--smtp-primary-hover);
+}
+
+.pagination .page-link {
+    color: var(--smtp-primary);
+}
+
+.pagination .page-link:hover {
+    color: var(--smtp-primary-hover);
+}
+
+/* --------------------------------------------------------------------------
+   19. Template iframe / content
+   -------------------------------------------------------------------------- */
+.template-iframe {
+    width: 100%;
+    height: 400px;
+    border: none;
+    background: white;
+}
+
+.template-content {
+    width: 100%;
+    max-height: 400px;
+    overflow: auto;
+    white-space: pre-wrap;
+    font-family: monospace;
+}
+
+/* --------------------------------------------------------------------------
+   20. Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .form-label {
+        margin-top: 0.5rem;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+}
