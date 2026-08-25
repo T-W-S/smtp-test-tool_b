@@ -785,7 +785,10 @@
       try {
         const data = await fetchJSON('/add_profile', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
           body: new URLSearchParams({
             name: profileName,
             server,
