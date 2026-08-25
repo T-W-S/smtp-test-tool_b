@@ -52,7 +52,15 @@ def add_profile():
                 flash(message, "danger")
                 return redirect(url_for("settings_bp.settings_page"))
 
-        config_service.add_profile(profile_data)
+        result = config_service.add_profile(profile_data)
+
+        if not result:
+            message = "Failed to save profile to the database"
+            if is_ajax:
+                return jsonify({"success": False, "message": message})
+            else:
+                flash(message, "danger")
+                return redirect(url_for("settings_bp.settings_page"))
 
         if is_ajax:
             return jsonify(
