@@ -417,18 +417,23 @@ select.form-select {
     box-shadow: var(--box-shadow-sm);
 }
 
-.btn-primary {
-    background: var(--smtp-gradient-primary);
-    border-color: var(--smtp-primary-hover);
-    color: #fff;
-}
-
-.btn-primary::after {
+.btn-primary::after,
+.btn-info::after,
+.btn-success::after,
+.btn-secondary::after,
+.btn-danger::after,
+.btn-warning::after {
     content: "";
     position: absolute;
     inset: 0;
     background: var(--smtp-gradient-glossy);
     pointer-events: none;
+}
+
+.btn-primary {
+    background: var(--smtp-gradient-primary);
+    border-color: var(--smtp-primary-hover);
+    color: #fff;
 }
 
 .btn-primary:hover,
@@ -446,14 +451,6 @@ select.form-select {
     color: #fff;
 }
 
-.btn-info::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--smtp-gradient-glossy);
-    pointer-events: none;
-}
-
 .btn-info:hover,
 .btn-info:focus,
 .btn-info:active {
@@ -469,14 +466,6 @@ select.form-select {
     color: #fff;
 }
 
-.btn-success::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--smtp-gradient-glossy);
-    pointer-events: none;
-}
-
 .btn-success:hover,
 .btn-success:focus,
 .btn-success:active {
@@ -490,38 +479,14 @@ select.form-select {
     border-color: var(--smtp-secondary);
 }
 
-.btn-secondary::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--smtp-gradient-glossy);
-    pointer-events: none;
-}
-
 .btn-danger {
     background: linear-gradient(135deg, var(--smtp-danger), var(--smtp-danger-hover));
     border-color: var(--smtp-danger-hover);
 }
 
-.btn-danger::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--smtp-gradient-glossy);
-    pointer-events: none;
-}
-
 .btn-warning {
     background: linear-gradient(135deg, var(--smtp-warning), var(--smtp-warning-hover));
     border-color: var(--smtp-warning-hover);
-}
-
-.btn-warning::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--smtp-gradient-glossy);
-    pointer-events: none;
 }
 
 .btn-outline-primary {
