@@ -27,7 +27,6 @@
     --smtp-gradient-primary: linear-gradient(135deg, #7c3aed, #3b82f6);
     --smtp-gradient-primary-hover: linear-gradient(135deg, #6d28d9, #2563eb);
     --smtp-gradient-glossy: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-    --smtp-gradient-header: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
 
     /* --- Glass-morphism -------------------------------------------------- */
     --smtp-glass-bg: rgba(30, 32, 48, 0.75);
@@ -175,7 +174,7 @@ a:focus {
 
 .card-header.bg-info,
 .card-header.bg-primary {
-    background: var(--smtp-gradient-header);
+    background: var(--smtp-gradient-primary);
     border-bottom: 1px solid rgba(59, 130, 246, 0.3);
 }
 
@@ -367,7 +366,7 @@ select.form-select {
 
 .modal-header.bg-info,
 .modal-header.bg-primary {
-    background: var(--smtp-gradient-header);
+    background: var(--smtp-gradient-primary);
     position: relative;
 }
 
@@ -545,11 +544,11 @@ select.form-select {
 }
 
 .bg-primary {
-    background: var(--smtp-gradient-header);
+    background: var(--smtp-gradient-primary);
 }
 
 .bg-info {
-    background: var(--smtp-gradient-header);
+    background: var(--smtp-gradient-primary);
 }
 
 .bg-success {
