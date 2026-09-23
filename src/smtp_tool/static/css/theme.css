@@ -48,6 +48,10 @@
     --smtp-danger: #ef4444;
     --smtp-danger-hover: #dc2626;
 
+    /* --- Secondary ------------------------------------------------------- */
+    --smtp-secondary: #4b5563;
+    --smtp-secondary-dark: #374151;
+
     /* --- Warning --------------------------------------------------------- */
     --smtp-warning: #f59e0b;
     --smtp-warning-hover: #d97706;
@@ -195,7 +199,7 @@ a:focus {
 }
 
 .card-header.bg-secondary {
-    background: linear-gradient(135deg, #374151, #4b5563);
+    background: linear-gradient(135deg, var(--smtp-secondary-dark), var(--smtp-secondary));
 }
 
 /* --------------------------------------------------------------------------
@@ -487,8 +491,8 @@ select.form-select {
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #4b5563, #374151);
-    border-color: #4b5563;
+    background: linear-gradient(135deg, var(--smtp-secondary), var(--smtp-secondary-dark));
+    border-color: var(--smtp-secondary);
 }
 
 .btn-secondary::after {
