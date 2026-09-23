@@ -83,6 +83,7 @@
     --bs-info-rgb: 59, 130, 246;
     --bs-success: var(--smtp-success);
     --bs-success-rgb: 16, 185, 129;
+    --bs-dark-rgb: 15, 17, 33;
     --bs-link-color: var(--smtp-accent);
     --bs-link-color-rgb: 59, 130, 246;
     --bs-link-hover-color: var(--smtp-primary);
@@ -589,10 +590,6 @@ select.form-select {
 
 .bg-success {
     background-color: var(--smtp-success);
-}
-
-.bg-dark {
-    background-color: var(--smtp-bg-darker);
 }
 
 /* --------------------------------------------------------------------------
