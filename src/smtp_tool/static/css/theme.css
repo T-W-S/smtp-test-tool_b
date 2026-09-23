@@ -43,6 +43,8 @@
     /* --- Danger ---------------------------------------------------------- */
     --smtp-danger: #ef4444;
     --smtp-danger-hover: #dc2626;
+    --smtp-danger-light: rgba(239, 68, 68, 0.12);
+    --smtp-danger-light-border: rgba(239, 68, 68, 0.25);
 
     /* --- Secondary ------------------------------------------------------- */
     --smtp-secondary: #4b5563;
@@ -234,13 +236,13 @@ a:focus {
 }
 
 .table-success {
-    --bs-table-bg: rgba(16, 185, 129, 0.1);
-    --bs-table-hover-bg: rgba(16, 185, 129, 0.15);
+    --bs-table-bg: var(--smtp-success-light);
+    --bs-table-hover-bg: var(--smtp-success-light-border);
 }
 
 .table-danger {
-    --bs-table-bg: rgba(239, 68, 68, 0.1);
-    --bs-table-hover-bg: rgba(239, 68, 68, 0.15);
+    --bs-table-bg: var(--smtp-danger-light);
+    --bs-table-hover-bg: var(--smtp-danger-light-border);
 }
 
 /* --------------------------------------------------------------------------
@@ -608,8 +610,8 @@ select.form-select {
 }
 
 .alert-danger {
-    background-color: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.25);
+    background-color: var(--smtp-danger-light);
+    border: 1px solid var(--smtp-danger-light-border);
     color: var(--smtp-danger);
 }
 
