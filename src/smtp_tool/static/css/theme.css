@@ -23,9 +23,6 @@
     --smtp-accent: #3b82f6;
     --smtp-accent-hover: #2563eb;
     --smtp-accent-active: #1d4ed8;
-    --smtp-accent-light: rgba(59, 130, 246, 0.15);
-    --smtp-accent-light-border: rgba(59, 130, 246, 0.25);
-
     /* --- Gradients ------------------------------------------------------- */
     --smtp-gradient-primary: linear-gradient(135deg, #7c3aed, #3b82f6);
     --smtp-gradient-primary-hover: linear-gradient(135deg, #6d28d9, #2563eb);
@@ -58,10 +55,8 @@
 
     /* --- Layout backgrounds ---------------------------------------------- */
     --smtp-bg-darker: #0f1121;
-    --smtp-bg-lighter: #1a1d2e;
 
     /* --- Borders & overlays --------------------------------------------- */
-    --smtp-border-subtle: rgba(124, 58, 237, 0.12);
     --smtp-border-input: rgba(124, 58, 237, 0.2);
     --smtp-text-muted: rgba(255, 255, 255, 0.5);
     --smtp-text-light: rgba(255, 255, 255, 0.85);
