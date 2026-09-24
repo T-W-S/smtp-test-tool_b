@@ -16,13 +16,27 @@
  *
  * Selectors and expected text taken directly from the QA report.
  */
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 
 // ---------------------------------------------------------------------------
 // Helper: unique name generator — each call within a test run is distinct
 // ---------------------------------------------------------------------------
 function uniqueName(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+}
+
+// ---------------------------------------------------------------------------
+// Helper: create a new SMTP profile via the Add Profile modal
+// ---------------------------------------------------------------------------
+async function createProfile(page: Page, name: string, server: string): Promise<void> {
+  await page.goto("/settings");
+  await page.getByRole("button", { name: "+ Add Profile" }).click();
+  const modal = page.locator("div#addProfileModal");
+  await expect(modal).toBeVisible();
+  await modal.locator("input#name").fill(name);
+  await modal.locator("input#server").fill(server);
+  await modal.locator(".modal-footer button[type='submit']").click();
+  await expect(page).toHaveURL(/\/settings/);
 }
 
 // ---------------------------------------------------------------------------
@@ -85,17 +99,7 @@ test.describe("Add Profile — successful submission (profiles.py milestone chan
     page,
   }) => {
     const name = uniqueName("E2E_Add");
-    await page.goto("/settings");
-    await page.getByRole("button", { name: "+ Add Profile" }).click();
-    const modal = page.locator("div#addProfileModal");
-    await expect(modal).toBeVisible();
-
-    await modal.locator("input#name").fill(name);
-    await modal.locator("input#server").fill("smtp.e2e-test.example.com");
-    await modal.locator(".modal-footer button[type='submit']").click();
-
-    // Standard form POST → server-side redirect back to /settings
-    await expect(page).toHaveURL(/\/settings/);
+    await createProfile(page, name, "smtp.e2e-test.example.com");
 
     // Flash rendered by profiles.py after a successful add_profile() call
     const flash = page.locator("div.alert.alert-success");
@@ -105,16 +109,7 @@ test.describe("Add Profile — successful submission (profiles.py milestone chan
 
   test("newly added profile appears in the profiles table", async ({ page }) => {
     const name = uniqueName("E2E_TableCheck");
-    await page.goto("/settings");
-    await page.getByRole("button", { name: "+ Add Profile" }).click();
-    const modal = page.locator("div#addProfileModal");
-    await expect(modal).toBeVisible();
-
-    await modal.locator("input#name").fill(name);
-    await modal.locator("input#server").fill("smtp.table-check.example.com");
-    await modal.locator(".modal-footer button[type='submit']").click();
-
-    await expect(page).toHaveURL(/\/settings/);
+    await createProfile(page, name, "smtp.table-check.example.com");
     // Profile name must appear in the first <td> of a table row
     await expect(page.locator("table.table tbody")).toContainText(name);
   });
@@ -123,16 +118,7 @@ test.describe("Add Profile — successful submission (profiles.py milestone chan
     page,
   }) => {
     const name = uniqueName("E2E_Actions");
-    await page.goto("/settings");
-    await page.getByRole("button", { name: "+ Add Profile" }).click();
-    const modal = page.locator("div#addProfileModal");
-    await expect(modal).toBeVisible();
-
-    await modal.locator("input#name").fill(name);
-    await modal.locator("input#server").fill("smtp.actions.example.com");
-    await modal.locator(".modal-footer button[type='submit']").click();
-
-    await expect(page).toHaveURL(/\/settings/);
+    await createProfile(page, name, "smtp.actions.example.com");
     await expect(page.locator("table.table tbody")).toContainText(name);
 
     // Per-profile action buttons (QA report: div.btn-group.btn-group-sm)
@@ -160,15 +146,8 @@ test.describe("Edit Profile — AJAX toast flow (app.js milestone change)", () =
 
   test.beforeEach(async ({ page }) => {
     profileName = uniqueName("E2E_Edit");
-    await page.goto("/settings");
-    await page.getByRole("button", { name: "+ Add Profile" }).click();
-    const modal = page.locator("div#addProfileModal");
-    await expect(modal).toBeVisible();
-    await modal.locator("input#name").fill(profileName);
-    await modal.locator("input#server").fill("smtp.before-edit.example.com");
-    await modal.locator(".modal-footer button[type='submit']").click();
-    // Wait for redirect and profile to appear in table
-    await expect(page).toHaveURL(/\/settings/);
+    await createProfile(page, profileName, "smtp.before-edit.example.com");
+    // Wait for profile to appear in table
     await expect(page.locator("table.table tbody")).toContainText(profileName);
   });
 
