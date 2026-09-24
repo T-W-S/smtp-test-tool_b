@@ -1,7 +1,7 @@
 /* ==========================================================================
    SMTP Test Tool — Consolidated Theme
-   Dark theme with orange accents, built on Bootstrap 5.3.3 dark mode.
-   Replaces: style.css, orange-theme.css, orange-minimal.css, theme-override.css
+   Dark theme with purple/blue accents and glass-morphism effects,
+   built on Bootstrap 5.3.3 dark mode.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -9,61 +9,86 @@
    -------------------------------------------------------------------------- */
 :root,
 :root[data-bs-theme="dark"] {
-    /* --- Brand / accent -------------------------------------------------- */
-    --smtp-primary: #e67e22;
-    --smtp-primary-hover: #d35400;
-    --smtp-primary-active: #c0392b;
-    --smtp-primary-light: rgba(230, 126, 34, 0.1);
-    --smtp-primary-light-border: rgba(230, 126, 34, 0.2);
-    --smtp-primary-focus-shadow: rgba(230, 126, 34, 0.25);
-    --smtp-primary-focus-border: rgba(230, 126, 34, 0.5);
-    --smtp-primary-subtle-bg: rgba(230, 126, 34, 0.07);
+    /* --- Primary palette ------------------------------------------------- */
+    --smtp-primary: #7c3aed;
+    --smtp-primary-hover: #6d28d9;
+    --smtp-primary-active: #5b21b6;
+    --smtp-primary-light: rgba(124, 58, 237, 0.15);
+    --smtp-primary-light-border: rgba(124, 58, 237, 0.25);
+    --smtp-primary-focus-shadow: rgba(124, 58, 237, 0.3);
+    --smtp-primary-focus-border: rgba(124, 58, 237, 0.5);
+    --smtp-primary-subtle-bg: rgba(124, 58, 237, 0.07);
 
-    /* --- Success (darker green) ----------------------------------------- */
-    --smtp-success: #186a3b;
-    --smtp-success-hover: #0e4023;
-    --smtp-success-active: #0a2e17;
-    --smtp-success-light: rgba(24, 106, 59, 0.1);
-    --smtp-success-light-border: rgba(24, 106, 59, 0.2);
+    /* --- Accent (blue) --------------------------------------------------- */
+    --smtp-accent: #3b82f6;
+    --smtp-accent-hover: #2563eb;
+    --smtp-accent-active: #1d4ed8;
+    /* --- Gradients ------------------------------------------------------- */
+    --smtp-gradient-primary: linear-gradient(135deg, #7c3aed, #3b82f6);
+    --smtp-gradient-primary-hover: linear-gradient(135deg, #6d28d9, #2563eb);
+    --smtp-gradient-glossy: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+
+    /* --- Glass-morphism -------------------------------------------------- */
+    --smtp-glass-bg: rgba(30, 32, 48, 0.75);
+    --smtp-glass-blur: blur(12px);
+    --smtp-glass-border: rgba(124, 58, 237, 0.2);
+
+    /* --- Success --------------------------------------------------------- */
+    --smtp-success: #10b981;
+    --smtp-success-hover: #059669;
+    --smtp-success-active: #047857;
+    --smtp-success-light: rgba(16, 185, 129, 0.12);
+    --smtp-success-light-border: rgba(16, 185, 129, 0.25);
 
     /* --- Danger ---------------------------------------------------------- */
-    --smtp-danger: #dc3545;
-    --smtp-danger-hover: #bb2d3b;
+    --smtp-danger: #ef4444;
+    --smtp-danger-hover: #dc2626;
+    --smtp-danger-light: rgba(239, 68, 68, 0.12);
+    --smtp-danger-light-border: rgba(239, 68, 68, 0.25);
+
+    /* --- Secondary ------------------------------------------------------- */
+    --smtp-secondary: #4b5563;
+    --smtp-secondary-dark: #374151;
 
     /* --- Warning --------------------------------------------------------- */
-    --smtp-warning: #ffc107;
-    --smtp-warning-hover: #ffca2c;
+    --smtp-warning: #f59e0b;
+    --smtp-warning-hover: #d97706;
 
     /* --- Layout backgrounds ---------------------------------------------- */
-    --smtp-bg-darker: #252833;
-    --smtp-bg-lighter: #2e3241;
+    --smtp-bg-darker: #0f1121;
 
     /* --- Borders & overlays --------------------------------------------- */
-    --smtp-border-subtle: rgba(255, 255, 255, 0.1);
-    --smtp-border-input: rgba(255, 255, 255, 0.15);
+    --smtp-border-input: rgba(124, 58, 237, 0.2);
     --smtp-text-muted: rgba(255, 255, 255, 0.5);
     --smtp-text-light: rgba(255, 255, 255, 0.85);
 
     /* --- Radii & shadows ------------------------------------------------ */
-    --border-radius-sm: 0.375rem;
-    --border-radius-md: 0.5rem;
-    --border-radius-lg: 0.75rem;
-    --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
-    --box-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
-    --box-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.16);
+    --smtp-radius-sm: 8px;
+    --smtp-radius-md: 12px;
+    --smtp-radius-lg: 16px;
+    --box-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --box-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --box-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
     --transition-speed: 0.2s;
+
+    /* --- Glow ------------------------------------------------------------ */
+    --smtp-glow-purple: 0 0 15px rgba(124, 58, 237, 0.3);
+    --smtp-glow-blue: 0 0 15px rgba(59, 130, 246, 0.3);
+    --smtp-glow-purple-strong: 0 0 25px rgba(124, 58, 237, 0.4);
 
     /* --- Bootstrap variable overrides ----------------------------------- */
     --bs-primary: var(--smtp-primary);
-    --bs-primary-rgb: 230, 126, 34;
-    --bs-info: var(--smtp-primary);
-    --bs-info-rgb: 230, 126, 34;
+    --bs-primary-rgb: 124, 58, 237;
+    --bs-info: var(--smtp-accent);
+    --bs-info-rgb: 59, 130, 246;
     --bs-success: var(--smtp-success);
-    --bs-success-rgb: 24, 106, 59;
-    --bs-link-color: var(--smtp-primary);
-    --bs-link-color-rgb: 230, 126, 34;
-    --bs-link-hover-color: var(--smtp-primary-hover);
-    --bs-link-hover-color-rgb: 211, 84, 0;
+    --bs-success-rgb: 16, 185, 129;
+    --bs-dark-rgb: 15, 17, 33;
+    --bs-link-color: var(--smtp-accent);
+    --bs-link-color-rgb: 59, 130, 246;
+    --bs-link-hover-color: var(--smtp-primary);
+    --bs-link-hover-color-rgb: 124, 58, 237;
+    --bs-body-bg: var(--smtp-bg-darker);
 }
 
 /* --------------------------------------------------------------------------
@@ -73,24 +98,47 @@ body {
     padding-bottom: 60px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         Helvetica, Arial, sans-serif;
+    background-color: var(--smtp-bg-darker);
 }
 
-/* Links */
 a {
-    color: var(--smtp-primary);
+    color: var(--smtp-accent);
+    transition: color var(--transition-speed);
 }
 
 a:hover,
 a:focus {
-    color: var(--smtp-primary-hover);
+    color: var(--smtp-primary);
 }
 
 /* --------------------------------------------------------------------------
    3. Navbar
    -------------------------------------------------------------------------- */
 .navbar {
-    box-shadow: var(--box-shadow-sm);
+    background: linear-gradient(135deg, rgba(15, 17, 33, 0.95), rgba(26, 29, 46, 0.95));
+    backdrop-filter: var(--smtp-glass-blur);
+    -webkit-backdrop-filter: var(--smtp-glass-blur);
+    box-shadow: 0 2px 20px rgba(124, 58, 237, 0.15);
+    border-bottom: 1px solid var(--smtp-glass-border);
     padding: 0.75rem 1rem;
+}
+
+.navbar-brand {
+    background: var(--smtp-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.navbar-nav .nav-link {
+    transition: color var(--transition-speed), text-shadow var(--transition-speed);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--smtp-accent);
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
 }
 
 /* --------------------------------------------------------------------------
@@ -99,9 +147,12 @@ a:focus {
 .card {
     height: 100%;
     margin-bottom: 1.5rem;
-    border-radius: var(--border-radius-md);
+    border-radius: var(--smtp-radius-md);
     box-shadow: var(--box-shadow-sm);
-    border: 1px solid var(--smtp-border-subtle);
+    border: 1px solid var(--smtp-glass-border);
+    background: var(--smtp-glass-bg);
+    backdrop-filter: var(--smtp-glass-blur);
+    -webkit-backdrop-filter: var(--smtp-glass-blur);
     transition: transform var(--transition-speed),
         box-shadow var(--transition-speed);
     overflow: hidden;
@@ -109,26 +160,42 @@ a:focus {
 
 .card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--box-shadow-md);
+    box-shadow: var(--box-shadow-md), var(--smtp-glow-purple);
 }
 
 .card-header {
-    border-bottom: 1px solid var(--smtp-border-subtle);
+    border-bottom: 1px solid var(--smtp-glass-border);
     font-weight: 600;
+    position: relative;
 }
 
 .card-header:first-child {
-    border-radius: calc(var(--border-radius-md) - 1px)
-        calc(var(--border-radius-md) - 1px) 0 0;
+    border-radius: calc(var(--smtp-radius-md) - 1px)
+        calc(var(--smtp-radius-md) - 1px) 0 0;
 }
 
 .card-header.bg-info,
 .card-header.bg-primary {
-    background-color: var(--smtp-primary);
+    background: var(--smtp-gradient-primary);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.card-header.bg-info::after,
+.card-header.bg-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--smtp-gradient-glossy);
+    pointer-events: none;
+    border-radius: inherit;
 }
 
 .card-header.bg-success {
-    background-color: var(--smtp-success);
+    background: linear-gradient(135deg, var(--smtp-success), var(--smtp-success-hover));
+}
+
+.card-header.bg-secondary {
+    background: linear-gradient(135deg, var(--smtp-secondary-dark), var(--smtp-secondary));
 }
 
 /* --------------------------------------------------------------------------
@@ -148,7 +215,11 @@ a:focus {
     bottom: 0;
     width: 100%;
     z-index: 1000;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, rgba(15, 17, 33, 0.95), rgba(26, 29, 46, 0.95));
+    backdrop-filter: var(--smtp-glass-blur);
+    -webkit-backdrop-filter: var(--smtp-glass-blur);
+    box-shadow: 0 -2px 20px rgba(124, 58, 237, 0.15);
+    border-top: 1px solid var(--smtp-glass-border);
     padding: 0.75rem 0;
 }
 
@@ -156,7 +227,7 @@ a:focus {
    7. Tables
    -------------------------------------------------------------------------- */
 .table-responsive {
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--smtp-radius-sm);
     overflow: hidden;
 }
 
@@ -164,25 +235,36 @@ a:focus {
     background-color: var(--smtp-primary-light);
 }
 
+.table-success {
+    --bs-table-bg: var(--smtp-success-light);
+    --bs-table-hover-bg: var(--smtp-success-light-border);
+}
+
+.table-danger {
+    --bs-table-bg: var(--smtp-danger-light);
+    --bs-table-hover-bg: var(--smtp-danger-light-border);
+}
+
 /* --------------------------------------------------------------------------
    8. Forms
    -------------------------------------------------------------------------- */
 .form-control,
 .form-select {
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--smtp-radius-sm);
     border: 1px solid var(--smtp-border-input);
     padding: 0.625rem 0.875rem;
+    background-color: rgba(15, 17, 33, 0.5);
     transition: border-color var(--transition-speed),
         box-shadow var(--transition-speed);
 }
 
 .form-control:focus,
 .form-select:focus {
-    box-shadow: 0 0 0 0.25rem var(--smtp-primary-focus-shadow);
+    box-shadow: 0 0 0 0.25rem var(--smtp-primary-focus-shadow), var(--smtp-glow-purple);
     border-color: var(--smtp-primary-focus-border);
+    background-color: rgba(15, 17, 33, 0.7);
 }
 
-/* HTML mode textarea */
 textarea.html-mode {
     font-family: "Courier New", monospace;
     background-color: var(--smtp-primary-subtle-bg);
@@ -190,21 +272,30 @@ textarea.html-mode {
 }
 
 textarea.html-mode:focus {
-    border-color: var(--smtp-primary-hover);
-    box-shadow: 0 0 0 0.25rem var(--smtp-primary-focus-shadow);
+    border-color: var(--smtp-primary);
+    box-shadow: 0 0 0 0.25rem var(--smtp-primary-focus-shadow), var(--smtp-glow-purple);
 }
 
-/* Select dropdowns */
 select.form-select {
     height: auto;
     appearance: auto;
 }
 
-/* Input group text */
 .input-group-text {
     background-color: var(--smtp-primary-light);
     border-color: var(--smtp-primary-light-border);
     color: var(--smtp-primary);
+    border-radius: var(--smtp-radius-sm);
+}
+
+.form-check-input:checked {
+    background-color: var(--smtp-primary);
+    border-color: var(--smtp-primary);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem var(--smtp-primary-focus-shadow);
+    border-color: var(--smtp-primary-focus-border);
 }
 
 /* --------------------------------------------------------------------------
@@ -222,18 +313,22 @@ select.form-select {
 .dropdown-menu {
     max-height: 300px;
     overflow-y: auto;
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--smtp-border-input);
-    box-shadow: var(--box-shadow-md);
+    border-radius: var(--smtp-radius-md);
+    border: 1px solid var(--smtp-glass-border);
+    box-shadow: var(--box-shadow-lg), var(--smtp-glow-purple);
     padding: 0.5rem 0;
     z-index: 1050;
-    background-color: var(--smtp-bg-darker);
+    background: var(--smtp-glass-bg);
+    backdrop-filter: var(--smtp-glass-blur);
+    -webkit-backdrop-filter: var(--smtp-glass-blur);
 }
 
 .dropdown-item {
     padding: 0.5rem 1rem;
     transition: background-color var(--transition-speed);
     color: var(--smtp-text-light);
+    border-radius: 4px;
+    margin: 0 0.25rem;
 }
 
 .dropdown-item:hover,
@@ -243,7 +338,7 @@ select.form-select {
 }
 
 .dropdown-divider {
-    border-top: 1px solid var(--smtp-border-subtle);
+    border-top: 1px solid var(--smtp-glass-border);
     margin: 0.5rem 0;
 }
 
@@ -257,19 +352,37 @@ select.form-select {
    10. Modals
    -------------------------------------------------------------------------- */
 .modal-content {
-    border-radius: var(--border-radius-lg);
-    border: none;
-    box-shadow: var(--box-shadow-lg);
+    border-radius: var(--smtp-radius-lg);
+    border: 1px solid var(--smtp-glass-border);
+    box-shadow: var(--box-shadow-lg), var(--smtp-glow-purple-strong);
     overflow: hidden;
+    background: var(--smtp-glass-bg);
+    backdrop-filter: var(--smtp-glass-blur);
+    -webkit-backdrop-filter: var(--smtp-glass-blur);
 }
 
 .modal-header {
-    border-bottom: 1px solid var(--smtp-border-subtle);
+    border-bottom: 1px solid var(--smtp-glass-border);
     padding: 1.25rem 1.5rem;
 }
 
+.modal-header.bg-info,
+.modal-header.bg-primary {
+    background: var(--smtp-gradient-primary);
+    position: relative;
+}
+
+.modal-header.bg-info::after,
+.modal-header.bg-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--smtp-gradient-glossy);
+    pointer-events: none;
+}
+
 .modal-footer {
-    border-top: 1px solid var(--smtp-border-subtle);
+    border-top: 1px solid var(--smtp-glass-border);
     padding: 1.25rem 1.5rem;
 }
 
@@ -283,14 +396,21 @@ select.form-select {
     padding: 1.5rem;
 }
 
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
 /* --------------------------------------------------------------------------
    11. Buttons
    -------------------------------------------------------------------------- */
 .btn {
     padding: 0.5rem 1rem;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--smtp-radius-sm);
     font-weight: 500;
     transition: all var(--transition-speed) ease-in-out;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn:hover {
@@ -298,14 +418,21 @@ select.form-select {
     box-shadow: var(--box-shadow-sm);
 }
 
-/* Primary */
+.btn-primary::after,
+.btn-info::after,
+.btn-success::after,
+.btn-secondary::after,
+.btn-danger::after,
+.btn-warning::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--smtp-gradient-glossy);
+    pointer-events: none;
+}
+
 .btn-primary {
-    background-color: var(--smtp-primary);
-    background-image: linear-gradient(
-        to right,
-        var(--smtp-primary),
-        var(--smtp-primary-hover)
-    );
+    background: var(--smtp-gradient-primary);
     border-color: var(--smtp-primary-hover);
     color: #fff;
 }
@@ -313,41 +440,29 @@ select.form-select {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-    background-color: var(--smtp-primary-hover);
-    background-image: none;
+    background: var(--smtp-gradient-primary-hover);
     border-color: var(--smtp-primary-active);
+    box-shadow: var(--smtp-glow-purple);
     color: #fff;
 }
 
-/* Info — aliased to primary orange */
 .btn-info {
-    background-color: var(--smtp-primary);
-    background-image: linear-gradient(
-        to right,
-        var(--smtp-primary),
-        var(--smtp-primary-hover)
-    );
-    border-color: var(--smtp-primary-hover);
+    background: var(--smtp-gradient-primary);
+    border-color: var(--smtp-accent-hover);
     color: #fff;
 }
 
 .btn-info:hover,
 .btn-info:focus,
 .btn-info:active {
-    background-color: var(--smtp-primary-hover);
-    background-image: none;
-    border-color: var(--smtp-primary-hover);
+    background: var(--smtp-gradient-primary-hover);
+    border-color: var(--smtp-accent-active);
+    box-shadow: var(--smtp-glow-blue);
     color: #fff;
 }
 
-/* Success */
 .btn-success {
-    background-color: var(--smtp-success);
-    background-image: linear-gradient(
-        to right,
-        var(--smtp-success),
-        var(--smtp-success-hover)
-    );
+    background: linear-gradient(135deg, var(--smtp-success), var(--smtp-success-hover));
     border-color: var(--smtp-success-hover);
     color: #fff;
 }
@@ -355,58 +470,87 @@ select.form-select {
 .btn-success:hover,
 .btn-success:focus,
 .btn-success:active {
-    background-color: var(--smtp-success-hover);
-    background-image: none;
+    background: linear-gradient(135deg, var(--smtp-success-hover), var(--smtp-success-active));
     border-color: var(--smtp-success-active);
     color: #fff;
 }
 
-/* Secondary */
 .btn-secondary {
-    background-image: linear-gradient(to right, #6c757d, #5a6268);
+    background: linear-gradient(135deg, var(--smtp-secondary), var(--smtp-secondary-dark));
+    border-color: var(--smtp-secondary);
 }
 
-/* Danger */
 .btn-danger {
-    background-image: linear-gradient(
-        to right,
-        var(--smtp-danger),
-        var(--smtp-danger-hover)
-    );
+    background: linear-gradient(135deg, var(--smtp-danger), var(--smtp-danger-hover));
+    border-color: var(--smtp-danger-hover);
 }
 
-/* Warning */
 .btn-warning {
-    background-image: linear-gradient(
-        to right,
-        var(--smtp-warning),
-        var(--smtp-warning-hover)
-    );
+    background: linear-gradient(135deg, var(--smtp-warning), var(--smtp-warning-hover));
+    border-color: var(--smtp-warning-hover);
+}
+
+.btn-outline-primary {
+    color: var(--smtp-primary);
+    border-color: var(--smtp-primary);
+}
+
+.btn-outline-primary:hover {
+    background: var(--smtp-gradient-primary);
+    border-color: var(--smtp-primary);
+    color: #fff;
+    box-shadow: var(--smtp-glow-purple);
+}
+
+.btn-outline-secondary {
+    border-color: rgba(124, 58, 237, 0.3);
+    color: var(--smtp-text-light);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--smtp-primary-light);
+    border-color: var(--smtp-primary);
+    color: #fff;
+}
+
+.btn-outline-warning {
+    color: var(--smtp-warning);
+    border-color: var(--smtp-warning);
+}
+
+.btn-outline-warning:hover {
+    background: linear-gradient(135deg, var(--smtp-warning), var(--smtp-warning-hover));
+    border-color: var(--smtp-warning);
+    color: #fff;
+}
+
+.btn-outline-light:hover {
+    background-color: var(--smtp-primary-light);
+    border-color: var(--smtp-primary);
+    color: #fff;
 }
 
 /* --------------------------------------------------------------------------
-   12. Utility / Bootstrap class overrides (orange replaces blue/info)
+   12. Utility / Bootstrap class overrides
    -------------------------------------------------------------------------- */
-/* Text */
 .text-primary {
     color: var(--smtp-primary);
 }
 
 .text-info {
-    color: var(--smtp-primary);
+    color: var(--smtp-accent);
 }
 
 .text-success {
     color: var(--smtp-success);
 }
 
-/* Backgrounds */
 .bg-primary {
-    background-color: var(--smtp-primary);
+    background: var(--smtp-gradient-primary);
 }
 
 .bg-info {
-    background-color: var(--smtp-primary);
+    background: var(--smtp-gradient-primary);
 }
 
 .bg-success {
@@ -423,40 +567,59 @@ select.form-select {
     border-radius: 50rem;
 }
 
+.badge.bg-primary {
+    background: var(--smtp-gradient-primary);
+}
+
 .badge.bg-info {
-    background-color: var(--smtp-primary);
+    background: var(--smtp-gradient-primary);
 }
 
 .badge.bg-success {
     background-color: var(--smtp-success);
 }
 
+.badge.bg-danger {
+    background-color: var(--smtp-danger);
+}
+
+.badge.bg-warning {
+    background-color: var(--smtp-warning);
+    color: #000;
+}
+
 /* --------------------------------------------------------------------------
    14. Alerts
    -------------------------------------------------------------------------- */
 .alert {
-    border-radius: var(--border-radius-md);
+    border-radius: var(--smtp-radius-md);
     border: none;
     box-shadow: var(--box-shadow-sm);
 }
 
 .alert-info {
     background-color: var(--smtp-primary-light);
-    border-color: var(--smtp-primary-light-border);
-    color: var(--smtp-primary);
+    border: 1px solid var(--smtp-primary-light-border);
+    color: var(--smtp-accent);
 }
 
 .alert-success {
     background-color: var(--smtp-success-light);
-    border-color: var(--smtp-success-light-border);
+    border: 1px solid var(--smtp-success-light-border);
     color: var(--smtp-success);
+}
+
+.alert-danger {
+    background-color: var(--smtp-danger-light);
+    border: 1px solid var(--smtp-danger-light-border);
+    color: var(--smtp-danger);
 }
 
 /* --------------------------------------------------------------------------
    15. Progress bars
    -------------------------------------------------------------------------- */
 .progress-bar.bg-info {
-    background-color: var(--smtp-primary);
+    background: var(--smtp-gradient-primary);
 }
 
 .progress-bar.bg-success {
@@ -464,18 +627,38 @@ select.form-select {
 }
 
 /* --------------------------------------------------------------------------
-   16. Nav pills
+   16. Nav pills / tabs
    -------------------------------------------------------------------------- */
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
-    background-color: var(--smtp-primary);
+    background: var(--smtp-gradient-primary);
+}
+
+.nav-tabs .nav-link {
+    border-radius: var(--smtp-radius-sm) var(--smtp-radius-sm) 0 0;
+    transition: color var(--transition-speed), border-color var(--transition-speed);
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: var(--smtp-glass-border);
+    color: var(--smtp-accent);
+}
+
+.nav-tabs .nav-link.active {
+    border-color: var(--smtp-glass-border) var(--smtp-glass-border) transparent;
+    color: var(--smtp-accent);
 }
 
 /* --------------------------------------------------------------------------
    17. List groups
    -------------------------------------------------------------------------- */
+.list-group-item {
+    border-color: var(--smtp-glass-border);
+    background-color: transparent;
+}
+
 .list-group-item.active {
-    background-color: var(--smtp-primary);
+    background: var(--smtp-gradient-primary);
     border-color: var(--smtp-primary-hover);
 }
 
@@ -483,16 +666,18 @@ select.form-select {
    18. Pagination
    -------------------------------------------------------------------------- */
 .pagination .page-item.active .page-link {
-    background-color: var(--smtp-primary);
+    background: var(--smtp-gradient-primary);
     border-color: var(--smtp-primary-hover);
 }
 
 .pagination .page-link {
-    color: var(--smtp-primary);
+    color: var(--smtp-accent);
+    border-color: var(--smtp-glass-border);
 }
 
 .pagination .page-link:hover {
-    color: var(--smtp-primary-hover);
+    color: var(--smtp-primary);
+    background-color: var(--smtp-primary-light);
 }
 
 /* --------------------------------------------------------------------------
@@ -503,6 +688,7 @@ select.form-select {
     height: 400px;
     border: none;
     background: white;
+    border-radius: var(--smtp-radius-sm);
 }
 
 .template-content {
@@ -514,7 +700,16 @@ select.form-select {
 }
 
 /* --------------------------------------------------------------------------
-   20. Responsive
+   20. Toast container
+   -------------------------------------------------------------------------- */
+.toast {
+    border-radius: var(--smtp-radius-md);
+    border: 1px solid var(--smtp-glass-border);
+    box-shadow: var(--box-shadow-md), var(--smtp-glow-purple);
+}
+
+/* --------------------------------------------------------------------------
+   21. Responsive
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
     .form-label {
