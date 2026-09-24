@@ -21,6 +21,13 @@ logger = logging.getLogger(__name__)
 profiles_bp = Blueprint("profiles", __name__)
 
 
+def _error_response(message: str, is_ajax: bool):
+    if is_ajax:
+        return jsonify({"success": False, "message": message})
+    flash(message, "danger")
+    return redirect(url_for("settings_bp.settings_page"))
+
+
 # -----------------------------------------------------------------------
 # POST /add_profile
 # -----------------------------------------------------------------------
@@ -45,22 +52,12 @@ def add_profile():
         }
 
         if not profile_data["name"] or not profile_data["server"]:
-            message = "Profile name and server are required"
-            if is_ajax:
-                return jsonify({"success": False, "message": message})
-            else:
-                flash(message, "danger")
-                return redirect(url_for("settings_bp.settings_page"))
+            return _error_response("Profile name and server are required", is_ajax)
 
         result = config_service.add_profile(profile_data)
 
         if not result:
-            message = "Failed to save profile to the database"
-            if is_ajax:
-                return jsonify({"success": False, "message": message})
-            else:
-                flash(message, "danger")
-                return redirect(url_for("settings_bp.settings_page"))
+            return _error_response("Failed to save profile to the database", is_ajax)
 
         if is_ajax:
             return jsonify(
@@ -72,12 +69,7 @@ def add_profile():
 
     except Exception as e:
         logger.exception("Error adding profile")
-        message = f"Error adding profile: {e}"
-        if is_ajax:
-            return jsonify({"success": False, "message": message})
-        else:
-            flash(message, "danger")
-            return redirect(url_for("settings_bp.settings_page"))
+        return _error_response(f"Error adding profile: {e}", is_ajax)
 
 
 # -----------------------------------------------------------------------
