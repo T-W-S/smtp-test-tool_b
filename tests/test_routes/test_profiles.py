@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from unittest.mock import patch
 
 from smtp_tool.services import config_service
 
@@ -56,6 +57,40 @@ class TestProfileRoutes:
             },
         )
         # Non-AJAX should redirect
+        assert response.status_code == 302
+
+    @patch(
+        "smtp_tool.blueprints.profiles.config_service.add_profile",
+        return_value=False,
+    )
+    def test_add_profile_db_failure_ajax(self, mock_add_profile, client):
+        response = client.post(
+            "/add_profile",
+            data={
+                "name": "fail-profile",
+                "server": "smtp.example.com",
+                "port": "587",
+            },
+            headers={"X-Requested-With": "XMLHttpRequest"},
+        )
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["success"] is False
+        assert "Failed to save profile to the database" in data["message"]
+
+    @patch(
+        "smtp_tool.blueprints.profiles.config_service.add_profile",
+        return_value=False,
+    )
+    def test_add_profile_db_failure_form(self, mock_add_profile, client):
+        response = client.post(
+            "/add_profile",
+            data={
+                "name": "fail-profile",
+                "server": "smtp.example.com",
+                "port": "587",
+            },
+        )
         assert response.status_code == 302
 
     def test_delete_profile(self, client, app):
